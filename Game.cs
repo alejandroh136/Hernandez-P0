@@ -247,11 +247,17 @@ namespace DungeonCrawler
             bool madechoice = false;
             
             while(!madechoice){
-                System.Console.Clear();
-                System.Console.WriteLine("Select enemy to attack");
-                for(int i = 0; i < listofenemies.Count; i++){
-                    System.Console.WriteLine(listofenemies[i]);
+                if(!madechoice){
+                    System.Console.Clear();
+                    foreach(var entry in BattleLog){
+                            System.Console.WriteLine(entry);
+                    }
+                    System.Console.WriteLine("Select enemy to attack");
+                    for(int i = 0; i < listofenemies.Count; i++){
+                        System.Console.WriteLine(listofenemies[i]);
+                    }
                 }
+                /*
                 if(inputkey.Key == ConsoleKey.Enter){
                     madechoice = true;
                     for(int i = 0; i< enemies.Count(); i++){
@@ -283,6 +289,42 @@ namespace DungeonCrawler
                         }
                     }
                 }
+                */
+                if(!madechoice){inputkey = Console.ReadKey();}
+                switch(inputkey.Key){
+                    case ConsoleKey.DownArrow:
+                        if(option < listofenemies.Count-1){
+                            listofenemies[option] = listofenemies[option].Substring(3);
+                            option++;
+                            listofenemies[option] = "*  " + listofenemies[option];
+                            for(int i = 0; i < listofenemies.Count; i++){
+                                System.Console.WriteLine(listofenemies[i]);
+                            }
+                        }
+                    break;
+                    case ConsoleKey.UpArrow:
+                        if(option > 0){
+                            listofenemies[option] = listofenemies[option].Substring(3);
+                            option--;
+                            listofenemies[option] = "*  " + listofenemies[option];
+                            for(int i = 0; i < listofenemies.Count; i++){
+                                System.Console.WriteLine(listofenemies[i]);
+                            }
+                        }
+                    break;
+                    case ConsoleKey.Enter:
+                        madechoice = true;
+                        for(int i = 0; i< enemies.Count(); i++){
+                            CharacterEntity enemy = enemies[i];
+                            if(enemy.name == listofenemies[i].Substring(3)){
+                                double damage = Math.Floor(Player!.BattleOther(enemy, CharacterEntity.AttackType.Physical));
+                                BattleLog!.Add(enemy.name + " takes battle damage of " + damage);
+                            }
+                        }
+                    break;
+                }
+                //if(!madechoice){inputkey = Console.ReadKey();}
+
             }
             return;
 
