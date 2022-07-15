@@ -5,6 +5,7 @@ namespace DungeonCrawler
         OverworldPlayerLocation? playerloc;
         CharacterEntity? Player;
         List<CharacterEntity>? Monsters;
+        List<string> BattleLog;
 
         DungeonWorld? world;
         private bool GameRunning = true;
@@ -13,6 +14,7 @@ namespace DungeonCrawler
             Monsters = CreateMonsters();
             playerloc = new OverworldPlayerLocation(19,14);//have to remember x represents row and 14 is column
             world = new DungeonWorld();
+            BattleLog = new List<string>();
         }
         public void Main(){
             if(world != null && playerloc != null){
@@ -22,7 +24,13 @@ namespace DungeonCrawler
                 return;
             }
             
-            while(GameRunning){Run();}
+            while(GameRunning){
+                Run();
+                Random rand = new Random();
+                if(rand.Next(100) % 2 == 0 && GameRunning){
+                    Battle();
+                }
+            }
             return;
         }
         private bool Run(){
@@ -33,16 +41,16 @@ namespace DungeonCrawler
             else{
                 switch(inputkey.Key){
                     case ConsoleKey.LeftArrow:
-                    CheckAndMove(playerloc.mx, playerloc.my-1);
+                    CheckAndMove(playerloc!.mx, playerloc.my-1);
                     break;
                     case ConsoleKey.DownArrow:
-                    CheckAndMove(playerloc.mx+1, playerloc.my);
+                    CheckAndMove(playerloc!.mx+1, playerloc.my);
                     break;
                     case ConsoleKey.UpArrow:
-                    CheckAndMove(playerloc.mx-1, playerloc.my);
+                    CheckAndMove(playerloc!.mx-1, playerloc.my);
                     break;
                     case ConsoleKey.RightArrow:
-                    CheckAndMove(playerloc.mx, playerloc.my+1);
+                    CheckAndMove(playerloc!.mx, playerloc.my+1);
                     break;
                 }
             }   
@@ -132,15 +140,151 @@ namespace DungeonCrawler
                 enemies[1,1] = Monsters[rand.Next(Monsters.Count)];
             }
             */
-            return false;
+            CharacterEntity[] enemies;
+            if(howmany == 3){
+                enemies = new CharacterEntity[3];
+                enemies[0] = Monsters[rand.Next(Monsters.Count)];
+                enemies[1] = Monsters[rand.Next(Monsters.Count)];
+                enemies[2] = Monsters[rand.Next(Monsters.Count)];
+            }
+            else{
+                enemies = new CharacterEntity[2];
+                enemies[0] = Monsters[rand.Next(Monsters.Count)];
+                enemies[1] = Monsters[rand.Next(Monsters.Count)];
+                
+            }
+            System.Console.WriteLine("quick log\nplayer is");
+            System.Console.WriteLine(Player!.name);
+            for(int i = 0; i < enemies.Count(); i++){
+                System.Console.WriteLine(enemies[i].name);
+            }
+            //bool result = BattleScene(enemies);
+            //return false;
+            return BattleScene(enemies);
         }
         //private bool BattleLogic(CharacterEntity[,] enemies){//i wanted to battle front line vs back line but decided against that
-        private bool BattleLogic(CharacterEntity[] enemies){
+        private bool BattleScene(CharacterEntity[] enemies){
             List<CharacterEntity> all = new List<CharacterEntity>();
-            for
+            all.Add(Player!);
+            for(int i = 0; i< enemies.Count(); i++){
+                all.Add(enemies[i]);
+            
+            }
+            PrintBattleScene(enemies);
+            all.Sort();
+            bool HaveEnemy = true;
+            while(HaveEnemy){
+                HaveEnemy = false;
+                foreach(CharacterEntity attacker in all){
+                    if(attacker.name == "Warrior"){
+                        PlayerAttacks(enemies);
+                    }
+                    else{
+                        if(attacker.hp > 0){
+                            //System.Console.WriteLine("quick log\nplayer is");
+                            System.Console.WriteLine(Player!.name);
+                            System.Console.WriteLine(attacker.name);
+                            //System.Console.WriteLine("Sdlkfjkl;asd kljf;jal;kdf");
+                            HaveEnemy = true;
+                            double damage = Math.Floor(attacker.BattleOther(Player, CharacterEntity.AttackType.Physical));
+                            bool stillAlive = Player.TakesDamage(damage);
+                            //System.Console.WriteLine("damage is " + damage);
+                            //System.Console.WriteLine("did I make it here??????");
+                            BattleLog.Add("You take battle damage of " + damage.ToString());
+                            System.Console.WriteLine(BattleLog[0]);
+                            //System.Console.WriteLine("did I make it here??????");
+                            if(stillAlive == false){
+                                return stillAlive;
+                            }
+                        }
+                    }
+                    foreach(var entry in BattleLog){
+                        System.Console.WriteLine(entry);
+                    }
+                    PrintBattleScene(enemies);
+                }
+            }
+
             return false;
         }
-        private void PlayerAttacks(){
+        private void PrintBattleScene(CharacterEntity[] enemies){
+            //for(int i = 0 i < System.Console.WindowWidth; i++)
+            System.Console.WriteLine("****************************************");
+            System.Console.WriteLine("\nenemy list:");
+            for(int i = 0; i< enemies.Count(); i++){
+                System.Console.WriteLine(enemies[i].name);
+            }
+            System.Console.WriteLine("\nVs\n");
+            System.Console.WriteLine("You as" + Player!.name);
+            System.Console.WriteLine("\n****************************************");
+        }
+        private void PlayerAttacks(CharacterEntity[] enemies){
+            bool HaveEnemy = false;
+            foreach(CharacterEntity other in enemies){
+                if(other.hp > 0){
+                    HaveEnemy = true;
+                }
+            }
+            if(HaveEnemy == false){
+                return;
+            }
+            ConsoleKeyInfo inputkey;
+            List<string> listofenemies = new List<string>();
+            for(int i = 0; i< enemies.Count(); i++){
+                CharacterEntity enemy = enemies[i];
+                if(enemy.hp > 0){
+                    listofenemies.Add(enemy.name);
+                }
+            }
+            listofenemies[0] = "*  " + listofenemies[0];
+            int option = 0;
+            System.Console.Clear();
+            System.Console.WriteLine("Select enemy to attack");
+            for(int i = 0; i < listofenemies.Count; i++){
+                System.Console.WriteLine(listofenemies[i]);
+            }
+            inputkey = Console.ReadKey();
+            bool madechoice = false;
+            
+            while(!madechoice){
+                System.Console.Clear();
+                System.Console.WriteLine("Select enemy to attack");
+                for(int i = 0; i < listofenemies.Count; i++){
+                    System.Console.WriteLine(listofenemies[i]);
+                }
+                if(inputkey.Key == ConsoleKey.Enter){
+                    madechoice = true;
+                    for(int i = 0; i< enemies.Count(); i++){
+                        CharacterEntity enemy = enemies[i];
+                        if(enemy.name == listofenemies[i].Substring(3)){
+                            double damage = Math.Floor(Player!.BattleOther(enemy, CharacterEntity.AttackType.Physical));
+                            BattleLog!.Add(enemy.name + " takes battle damage of " + damage);
+                        }
+                    }
+                }
+                if(!madechoice){inputkey = Console.ReadKey();}
+                if(inputkey.Key == ConsoleKey.DownArrow){
+                    if(option < listofenemies.Count-1){
+                        listofenemies[option] = listofenemies[option].Substring(3);
+                        option++;
+                        listofenemies[option] = "*  " + listofenemies[option];
+                        for(int i = 0; i < listofenemies.Count; i++){
+                            System.Console.WriteLine(listofenemies[i]);
+                        }
+                    }
+                }
+                if(inputkey.Key ==ConsoleKey.UpArrow){
+                    if(option > 0){
+                        listofenemies[option] = listofenemies[option].Substring(3);
+                        option--;
+                        listofenemies[option] = "*  " + listofenemies[option];
+                        for(int i = 0; i < listofenemies.Count; i++){
+                            System.Console.WriteLine(listofenemies[i]);
+                        }
+                    }
+                }
+            }
+            return;
 
         }
 
