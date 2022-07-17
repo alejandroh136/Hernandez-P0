@@ -11,6 +11,8 @@ namespace DungeonCrawler
         DungeonWorld? world;
         private bool GameRunning = true;
         public bool NoDeath{get;set;}
+        //stall things
+        string[] dialog = {" points behind you", " looks at your feet", " laughs at you", " sneezes", " looks at their phone", " takes a nap", " yawns", " prompts you to take a free shot"};
         public Game(){
             random = new Random();
             Player = new CharacterEntity("Warrior",50,11,12,5,5,8);
@@ -177,22 +179,25 @@ namespace DungeonCrawler
                         PlayerAttacks(enemies);
                     }
                     else{
-                        if(attacker.hp > 0){  
-                            //System.Console.WriteLine("quick log\nplayer is");
-                            System.Console.WriteLine(Player!.name);
-                            System.Console.WriteLine(attacker.name);
-                            //System.Console.WriteLine("Sdlkfjkl;asd kljf;jal;kdf");
+                        if(attacker.hp > 0){
                             HaveEnemy = true;
-                            double damage = Math.Floor(attacker.BattleOther(Player, CharacterEntity.AttackType.Physical));
-                            bool stillAlive = Player.TakesDamage(damage);
-                            //System.Console.WriteLine("damage is " + damage);
-                            //System.Console.WriteLine("did I make it here??????");
-                            BattleLog.Add("You take battle damage of " + damage.ToString());
-                            System.Console.WriteLine(BattleLog[0]);
-                            //System.Console.WriteLine("did I make it here??????");
-                            if(stillAlive == false){
-                                return stillAlive;
+                            int randomly = random.Next(100);
+                            if(randomly < 25 || randomly > 75 ){
+                                //System.Console.WriteLine("quick log\nplayer is");
+                                //System.Console.WriteLine(Player!.name);
+                                //System.Console.WriteLine(attacker.name);
+                                double damage = Math.Floor(attacker.BattleOther(Player!, CharacterEntity.AttackType.Physical));
+                                bool stillAlive = Player!.TakesDamage(damage);
+                                BattleLog.Add("You take battle damage of " + damage.ToString());
+                                if(stillAlive == false){
+                                    return stillAlive;
+                                }
                             }
+                            else{
+                                randomly = random.Next(dialog.Count());
+                                BattleLog.Add(attacker.name + dialog[randomly]);
+                            }
+                            
                         }
                     }
                     foreach(var entry in BattleLog){
