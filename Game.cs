@@ -22,6 +22,7 @@ namespace DungeonCrawler
             BattleLog = new List<string>();
         }
         public void Main(){
+            PrintStartGame();
             if(world != null && playerloc != null){
                 world.SetPlayerLocation(playerloc);
             }
@@ -259,39 +260,6 @@ namespace DungeonCrawler
                         System.Console.WriteLine(listofenemies[i]);
                     }
                 }
-                /*
-                if(inputkey.Key == ConsoleKey.Enter){
-                    madechoice = true;
-                    for(int i = 0; i< enemies.Count(); i++){
-                        CharacterEntity enemy = enemies[i];
-                        if(enemy.name == listofenemies[i].Substring(3)){
-                            double damage = Math.Floor(Player!.BattleOther(enemy, CharacterEntity.AttackType.Physical));
-                            BattleLog!.Add(enemy.name + " takes battle damage of " + damage);
-                        }
-                    }
-                }
-                if(!madechoice){inputkey = Console.ReadKey();}
-                if(inputkey.Key == ConsoleKey.DownArrow){
-                    if(option < listofenemies.Count-1){
-                        listofenemies[option] = listofenemies[option].Substring(3);
-                        option++;
-                        listofenemies[option] = "*  " + listofenemies[option];
-                        for(int i = 0; i < listofenemies.Count; i++){
-                            System.Console.WriteLine(listofenemies[i]);
-                        }
-                    }
-                }
-                if(inputkey.Key ==ConsoleKey.UpArrow){
-                    if(option > 0){
-                        listofenemies[option] = listofenemies[option].Substring(3);
-                        option--;
-                        listofenemies[option] = "*  " + listofenemies[option];
-                        for(int i = 0; i < listofenemies.Count; i++){
-                            System.Console.WriteLine(listofenemies[i]);
-                        }
-                    }
-                }
-                */
                 if(!madechoice){inputkey = Console.ReadKey();}
                 switch(inputkey.Key){
                     case ConsoleKey.DownArrow:
@@ -331,6 +299,13 @@ namespace DungeonCrawler
             }
             return;
 
+        }
+        private void PrintStartGame(){
+            System.Console.SetCursorPosition(System.Console.CursorLeft,(System.Console.WindowHeight / 4));
+
+            System.Console.WriteLine("Welcome to Dungeon Doom");
+            System.Console.WriteLine("Press enter to being ");
+            System.Console.ReadLine();
         }
 
     }    
