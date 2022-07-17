@@ -37,11 +37,13 @@ namespace DungeonCrawler
                     GameRunning = Battle();
                 }
             }
+            System.Console.WriteLine("your hp is " + Player.hp);
+            System.Console.WriteLine("you died :(");
             return;
         }
         private bool Run(){
             world!.PrintMap();
-            System.Console.WriteLine("Your HP is " + Player.hp);
+            //System.Console.WriteLine("Your HP is " + Player.hp);
             ConsoleKeyInfo inputkey = Console.ReadKey();
             if(inputkey.Key == ConsoleKey.P)
                 PauseMenu();
@@ -208,7 +210,7 @@ namespace DungeonCrawler
                 }
             }
 
-            return false;
+            return true;
         }
         private void PrintBattleScene(CharacterEntity[] enemies){
             //for(int i = 0 i < System.Console.WindowWidth; i++)
@@ -218,7 +220,7 @@ namespace DungeonCrawler
                 System.Console.WriteLine(enemies[i].name);
             }
             System.Console.WriteLine("\nVs\n");
-            System.Console.WriteLine("You as" + Player!.name);
+            System.Console.WriteLine("You a " + Player!.name);
             System.Console.WriteLine("\n****************************************");
         }
         private void PlayerAttacks(CharacterEntity[] enemies){
@@ -284,9 +286,10 @@ namespace DungeonCrawler
                     break;
                     case ConsoleKey.Enter:
                         madechoice = true;
-                        for(int i = 0; i< enemies.Count(); i++){
-                            CharacterEntity enemy = enemies[i];
-                            if(enemy.name == listofenemies[i].Substring(3)){
+                        //for(int i = 0; i< enemies.Count(); i++){
+                        foreach(CharacterEntity enemy in enemies){
+                            //CharacterEntity enemy = enemies[i];
+                            if(enemy.name == listofenemies[option].Substring(3) && enemy.hp > 0){
                                 double damage = Math.Floor(Player!.BattleOther(enemy, CharacterEntity.AttackType.Physical));
                                 enemy.TakesDamage(damage);
                                 BattleLog!.Add(enemy.name + " takes battle damage of " + damage);
@@ -301,8 +304,8 @@ namespace DungeonCrawler
 
         }
         private void PrintStartGame(){
+            System.Console.Clear();
             System.Console.SetCursorPosition(System.Console.CursorLeft,(System.Console.WindowHeight / 4));
-
             System.Console.WriteLine("Welcome to Dungeon Doom");
             System.Console.WriteLine("Press enter to being ");
             System.Console.ReadLine();
