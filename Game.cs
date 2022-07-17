@@ -6,10 +6,13 @@ namespace DungeonCrawler
         CharacterEntity? Player;
         List<CharacterEntity>? Monsters;
         List<string> BattleLog;
+        Random random;
 
         DungeonWorld? world;
         private bool GameRunning = true;
+        public bool NoDeath{get;set;}
         public Game(){
+            random = new Random();
             Player = new CharacterEntity("Warrior",50,11,12,5,5,8);
             Monsters = CreateMonsters();
             playerloc = new OverworldPlayerLocation(19,14);//have to remember x represents row and 14 is column
@@ -24,17 +27,18 @@ namespace DungeonCrawler
                 return;
             }
             
-            while(GameRunning){
+            while(GameRunning || NoDeath){
                 Run();
-                Random rand = new Random();
-                if(rand.Next(100) % 2 == 0 && GameRunning){
-                    Battle();
+                int randomly = random.Next(100);
+                if(randomly < 10 || randomly > 90 ){
+                    GameRunning = Battle();
                 }
             }
             return;
         }
         private bool Run(){
-            world.PrintMap();
+            world!.PrintMap();
+            System.Console.WriteLine("Your HP is " + Player.hp);
             ConsoleKeyInfo inputkey = Console.ReadKey();
             if(inputkey.Key == ConsoleKey.P)
                 PauseMenu();
@@ -57,7 +61,7 @@ namespace DungeonCrawler
             return true;
         }
         private void CheckAndMove(int x, int y){
-            char checkTile = world.GetTileAt(x,y);
+            char checkTile = world!.GetTileAt(x,y);
             if(checkTile == 'O' && playerloc != null
                 && playerloc.mx > 0 && playerloc.mx < world.GetMapHeight() 
                 && playerloc.my > 0 && playerloc.my < world.GetMapWidth())
@@ -109,55 +113,47 @@ namespace DungeonCrawler
                 if(option == '3' && inputkey.Key == ConsoleKey.Enter){
                     here = false;
                     GameRunning = false;
+                    //I need to also change this
+                    NoDeath = false;
                     System.Console.Clear();
 
                 }
             }while(here);
         }
         private List<CharacterEntity> CreateMonsters(){
-            Random rand = new Random();
+            //Random random = new Random();
             string[] names = {"Warcat","Ghostly","Knocker","Harpy","Spider","Spiked F","Gremlin","Siren","Tiger","Gargoyle","Lemon","Orange","Poisoned G","Boar","Pirate"};
             Monsters = new List<CharacterEntity>();
             for(int i = 0; i< 20; i++){
-                Monsters.Add(new CharacterEntity(names[rand.Next(15)],10+rand.Next(4),3+rand.Next(3),2+rand.Next(3),4+rand.Next(3),1+rand.Next(3),6+rand.Next(3)));
+                Monsters.Add(new CharacterEntity(names[random.Next(15)],10+random.Next(4),3+random.Next(3),2+random.Next(3),4+random.Next(3),1+random.Next(3),6+random.Next(3)));
             }
             return Monsters;
         }
         private bool Battle(){//prepare for battle
             //get few monsters
             int howmany = 2;
-            Random rand = new Random();
-            howmany = howmany + (rand.Next(100) % 2);
-            /*
-            CharacterEntity[,] enemies = new CharacterEntity[3,3];
-            if(howmany == 3){
-                enemies[0,0] = Monsters[rand.Next(Monsters.Count)];
-                enemies[0,1] = Monsters[rand.Next(Monsters.Count)];
-                enemies[1,1] = Monsters[rand.Next(Monsters.Count)];
-            }
-            else{
-                enemies[0,1] = Monsters[rand.Next(Monsters.Count)];
-                enemies[1,1] = Monsters[rand.Next(Monsters.Count)];
-            }
-            */
+            //Random rand = new Random();
+            howmany = howmany + (random.Next(100) % 2);
+
             CharacterEntity[] enemies;
             if(howmany == 3){
                 enemies = new CharacterEntity[3];
-                enemies[0] = Monsters[rand.Next(Monsters.Count)];
-                enemies[1] = Monsters[rand.Next(Monsters.Count)];
-                enemies[2] = Monsters[rand.Next(Monsters.Count)];
+                enemies[0] = Monsters![random.Next(Monsters.Count)];
+                enemies[1] = Monsters![random.Next(Monsters.Count)];
+                enemies[2] = Monsters![random.Next(Monsters.Count)];
             }
             else{
                 enemies = new CharacterEntity[2];
-                enemies[0] = Monsters[rand.Next(Monsters.Count)];
-                enemies[1] = Monsters[rand.Next(Monsters.Count)];
+                enemies[0] = Monsters![random.Next(Monsters.Count)];
+                enemies[1] = Monsters![random.Next(Monsters.Count)];
                 
             }
-            System.Console.WriteLine("quick log\nplayer is");
-            System.Console.WriteLine(Player!.name);
-            for(int i = 0; i < enemies.Count(); i++){
-                System.Console.WriteLine(enemies[i].name);
-            }
+            //my log for checking if it was created properly
+            //System.Console.WriteLine("quick log\nplayer is");
+            //System.Console.WriteLine(Player!.name);
+            //for(int i = 0; i < enemies.Count(); i++){
+            //    System.Console.WriteLine(enemies[i].name);
+            //}
             //bool result = BattleScene(enemies);
             //return false;
             return BattleScene(enemies);
@@ -167,8 +163,9 @@ namespace DungeonCrawler
             List<CharacterEntity> all = new List<CharacterEntity>();
             all.Add(Player!);
             for(int i = 0; i< enemies.Count(); i++){
-                all.Add(enemies[i]);
-            
+                if(enemies[i].hp > 0){
+                    all.Add(enemies[i]);
+                }
             }
             PrintBattleScene(enemies);
             all.Sort();
@@ -180,7 +177,7 @@ namespace DungeonCrawler
                         PlayerAttacks(enemies);
                     }
                     else{
-                        if(attacker.hp > 0){
+                        if(attacker.hp > 0){  
                             //System.Console.WriteLine("quick log\nplayer is");
                             System.Console.WriteLine(Player!.name);
                             System.Console.WriteLine(attacker.name);
@@ -318,6 +315,7 @@ namespace DungeonCrawler
                             CharacterEntity enemy = enemies[i];
                             if(enemy.name == listofenemies[i].Substring(3)){
                                 double damage = Math.Floor(Player!.BattleOther(enemy, CharacterEntity.AttackType.Physical));
+                                enemy.TakesDamage(damage);
                                 BattleLog!.Add(enemy.name + " takes battle damage of " + damage);
                             }
                         }

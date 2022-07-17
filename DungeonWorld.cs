@@ -74,19 +74,7 @@ namespace DungeonCrawler
         public void SetPlayerLocation(OverworldPlayerLocation p){
             this.playerLocation = p;
         }
-        /*
-        public void UpdateMapLocation(PlayerLocation.Move move){
-            switch(move){
-                case PlayerLocation.Move.Left:
-                break;
-                case PlayerLocation.Move.Down:
-                break;
-                case PlayerLocation.Move.Up:
-                break;
-                case PlayerLocation.Move.Right:
-                break;
-            }
-        }*/
+        
         public void UpdateMap(){
             int x = playerLocation.mx;
             int y = playerLocation.my;
@@ -97,13 +85,7 @@ namespace DungeonCrawler
 
         }
         public char GetTileAt(int x, int y){
-/*             try{
             return WorkingMap[x,y];
-            }catch(IndexOutOfRangeException OutOfRange){
-                //new Throw new execption 
-            } */
-            return WorkingMap[x,y];
-
         }
     }
 }
