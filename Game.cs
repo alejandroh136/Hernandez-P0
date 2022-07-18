@@ -37,8 +37,11 @@ namespace DungeonCrawler
                     GameRunning = Battle();
                 }
             }
-            System.Console.WriteLine("your hp is " + Player.hp);
-            System.Console.WriteLine("you died :(");
+            if(Player.hp < 0){
+                System.Console.WriteLine("your hp is " + Player.hp);
+                System.Console.WriteLine("you died :(");
+            }
+            System.Console.WriteLine("Thank you for playing\nGood Bye :)");
             return;
         }
         private bool Run(){
@@ -115,6 +118,8 @@ namespace DungeonCrawler
                     option--;
                 if(option == '1' && inputkey.Key == ConsoleKey.Enter)
                     here = false;
+                if(option == '2' && inputkey.Key == ConsoleKey.Enter)
+                    PrintPlayerStats();
                 if(option == '3' && inputkey.Key == ConsoleKey.Enter){
                     here = false;
                     GameRunning = false;
@@ -223,6 +228,19 @@ namespace DungeonCrawler
             System.Console.WriteLine("You a " + Player!.name);
             System.Console.WriteLine("\n****************************************");
         }
+        private void PrintPlayerStats(){
+            System.Console.Clear();
+            System.Console.WriteLine("Player stats");
+            System.Console.WriteLine("Name: " + Player!.name);
+            System.Console.WriteLine("HP: " + Player.hp);
+            System.Console.WriteLine("Attack: " + Player.strength);
+            System.Console.WriteLine("Defense: " + Player.defense);
+            System.Console.WriteLine("Intelligence: " + Player.intelligence);
+            System.Console.WriteLine("Resistance: " + Player.resistance);
+            System.Console.WriteLine("Resistance: " + Player.speed);
+            System.Console.WriteLine("Press enter to continue");
+            System.Console.ReadLine();
+        }
         private void PlayerAttacks(CharacterEntity[] enemies){
             bool HaveEnemy = false;
             foreach(CharacterEntity other in enemies){
@@ -307,7 +325,9 @@ namespace DungeonCrawler
             System.Console.Clear();
             System.Console.SetCursorPosition(System.Console.CursorLeft,(System.Console.WindowHeight / 4));
             System.Console.WriteLine("Welcome to Dungeon Doom");
-            System.Console.WriteLine("Press enter to being ");
+            System.Console.WriteLine("Press enter to being ...\n\n");
+            System.Console.SetCursorPosition(System.Console.BufferWidth-10,(System.Console.CursorTop));
+            System.Console.WriteLine("your doom");
             System.Console.ReadLine();
         }
 
