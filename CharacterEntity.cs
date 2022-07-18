@@ -6,16 +6,16 @@
             this.strength = 1;
             this.defense = 1;
             this.intelligence = 1;
-            this.resistence = 1;
+            this.resistance = 1;
             this.hp = 1;
             this.speed = 1;
         }
-        public CharacterEntity(string name, int hp, int strength, int defense, int intelligence, int resistence, int speed){
+        public CharacterEntity(string name, int hp, int strength, int defense, int intelligence, int resistance, int speed){
             this.name = name;
             this.strength = strength;
             this.defense = defense;
             this.intelligence = intelligence;
-            this.resistence = resistence;
+            this.resistance = resistance;
             this.hp = hp;
             this.speed = speed;
         }
@@ -34,7 +34,7 @@
         public int hp {get;set;}
         public int speed {get;set;}
         public int intelligence {get;set;}
-        public int resistence {get;set;}
+        public int resistance {get;set;}
         public int strength {get;set;}
         public int defense {get;set;}
         protected virtual float getRandomFloat(){
@@ -52,7 +52,7 @@
                 return (Math.Abs(this.strength - other.defense) * this.getRandomFloat());
             }
             // no need to specify else
-            return (Math.Abs(this.intelligence - this.defense) * this.getRandomFloat());
+            return (Math.Abs(this.intelligence - this.resistance) * this.getRandomFloat());
         }
         public float Multiplier(CharacterEntity other){
             if(this.MyAttribute == AttackAttribute.Fire && other.MyAttribute == AttackAttribute.Ice) return 2.0f;
