@@ -69,7 +69,7 @@
         public int CompareTo(object? other)
         {
             if(other == null) return 1;
-            CharacterEntity otherCharacter = other as CharacterEntity;
+            CharacterEntity? otherCharacter = other as CharacterEntity;
             if(otherCharacter != null){
                 return this.speed.CompareTo(otherCharacter.speed);
             }

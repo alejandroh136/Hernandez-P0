@@ -76,6 +76,9 @@ namespace DungeonCrawler
         }
         
         public void UpdateMap(){
+            if(playerLocation == null){
+                return;
+            }
             int x = playerLocation.mx;
             int y = playerLocation.my;
             WorkingMap[x,y-1] = SourceMap[x,y-1];

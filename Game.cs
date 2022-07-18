@@ -37,7 +37,7 @@ namespace DungeonCrawler
                     GameRunning = Battle();
                 }
             }
-            if(Player.hp < 0){
+            if(Player!.hp < 0){
                 System.Console.WriteLine("your hp is " + Player.hp);
                 System.Console.WriteLine("you died :(");
             }
@@ -69,6 +69,9 @@ namespace DungeonCrawler
             return true;
         }
         private void CheckAndMove(int x, int y){
+            if(world == null){
+                return;
+            }
             char checkTile = world!.GetTileAt(x,y);
             if(checkTile == 'O' && playerloc != null
                 && playerloc.mx > 0 && playerloc.mx < world.GetMapHeight() 
@@ -324,10 +327,10 @@ namespace DungeonCrawler
         private void PrintStartGame(){
             System.Console.Clear();
             System.Console.SetCursorPosition(System.Console.CursorLeft,(System.Console.WindowHeight / 4));
-            System.Console.WriteLine("Welcome to Dungeon Doom");
-            System.Console.WriteLine("Press enter to being ...\n\n");
+            System.Console.WriteLine("Welcome to Dungeon Doom\n\n");
             System.Console.SetCursorPosition(System.Console.BufferWidth-10,(System.Console.CursorTop));
             System.Console.WriteLine("your doom");
+            System.Console.WriteLine("Press enter to being ...\n\n");
             System.Console.ReadLine();
         }
 
