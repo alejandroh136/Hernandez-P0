@@ -33,12 +33,14 @@ namespace DungeonCrawler
             while(GameRunning || NoDeath){
                 Run();
                 int randomly = random.Next(100);
-                if(randomly < 10 || randomly > 90 ){
+                if((GameRunning) && 
+			( randomly < 10 || randomly > 90 )){
                     GameRunning = Battle();
                 }
             }
             if(Player!.hp < 0){
-                System.Console.WriteLine("your hp is " + Player.hp);
+                //System.Console.WriteLine("your hp is " + Player.hp);
+		System.Console.WriteLine("your hp dropped below zero");
                 System.Console.WriteLine("you died :(");
             }
             System.Console.WriteLine("Thank you for playing\nGood Bye :)");
@@ -73,6 +75,11 @@ namespace DungeonCrawler
                 return;
             }
             char checkTile = world!.GetTileAt(x,y);
+            if(checkTile == '_'){
+                GameRunning = false;
+                NoDeath = false;
+                PrintExit();
+            }
             if(checkTile == 'O' && playerloc != null
                 && playerloc.mx > 0 && playerloc.mx < world.GetMapHeight() 
                 && playerloc.my > 0 && playerloc.my < world.GetMapWidth())
@@ -330,8 +337,11 @@ namespace DungeonCrawler
             System.Console.WriteLine("Welcome to Dungeon Doom\n\n");
             System.Console.SetCursorPosition(System.Console.BufferWidth-10,(System.Console.CursorTop));
             System.Console.WriteLine("your doom");
-            System.Console.WriteLine("Press enter to being ...\n\n");
+            System.Console.WriteLine("\n\n\n\nPress enter to being ...\n");
             System.Console.ReadLine();
+        }
+        private void PrintExit(){
+            System.Console.WriteLine("Congratulations\nYou found the exit!");
         }
 
     }    
