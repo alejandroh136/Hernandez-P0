@@ -13,10 +13,11 @@ namespace DungeonCrawler
         public bool NoDeath{get;set;}
         //stall things
         string[] dialog = {" points behind you", " looks at your feet", " laughs at you", " sneezes", " looks at their phone", " takes a nap", " yawns", " prompts you to take a free shot"};
-        public Game(){
+        public Game()
 		//random is safe as it does not deal with cryptograph
             random = new Random();
             Player = new CharacterEntity("Warrior",50,11,12,5,5,8);
+	    //create some monsters from character class and added them into a list
             Monsters = CreateMonsters();
             playerloc = new OverworldPlayerLocation(19,14);//have to remember x represents row and 14 is column
             world = new DungeonWorld();
