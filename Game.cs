@@ -14,6 +14,7 @@ namespace DungeonCrawler
         //stall things
         string[] dialog = {" points behind you", " looks at your feet", " laughs at you", " sneezes", " looks at their phone", " takes a nap", " yawns", " prompts you to take a free shot"};
         public Game(){
+		//random is safe as it does not deal with cryptograph
             random = new Random();
             Player = new CharacterEntity("Warrior",50,11,12,5,5,8);
             Monsters = CreateMonsters();
